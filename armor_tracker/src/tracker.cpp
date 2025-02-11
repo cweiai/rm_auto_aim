@@ -32,15 +32,27 @@ void Tracker::init(const Armors::SharedPtr & armors_msg)
   if (armors_msg->armors.empty()) {
     return;
   }
-
-  // Simply choose the armor that is closest to image center
-  double min_distance = DBL_MAX;
-  tracked_armor = armors_msg->armors[0];
-  for (const auto & armor : armors_msg->armors) {
-    if (armor.distance_to_image_center < min_distance) {
-      min_distance = armor.distance_to_image_center;
-      tracked_armor = armor;
+  target_id=armors_msg->target_id;
+  if (armors_msg->armors.empty()) {
+    return;
+  }
+  if (mode_ == 1)
+  {
+    // Simply choose the armor that is closest to image center
+    double min_distance = DBL_MAX;
+    tracked_armor = armors_msg->armors[0];
+    for (const auto & armor : armors_msg->armors) 
+    {
+      if (armor.distance_to_image_center < min_distance) 
+      {
+        min_distance = armor.distance_to_image_center;
+        tracked_armor = armor;
+      }
     }
+  }
+  else if (mode_==2)
+  {
+    tracked_armor = armors_msg->armors[target_id];
   }
 
   initEKF(tracked_armor);
